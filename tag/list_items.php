@@ -24,38 +24,49 @@ $listDirn  = $this->escape($this->state->get('list.direction'));
 ?>
 <div class="com-tags-compact__items">
     <form action="<?php echo htmlspecialchars(Uri::getInstance()->toString()); ?>" method="post" name="adminForm" id="adminForm" class="com-tags-tag-list__items">
-        <?php if ($this->params->get('filter_field')) : ?>
-            <div class="com-tags-tag__filter btn-group">
-                <label class="filter-search-lbl visually-hidden" for="filter-search">
-                    <?php echo Text::_('COM_TAGS_TITLE_FILTER_LABEL'); ?>
-                </label>
-                <input
-                    type="text"
-                    name="filter-search"
-                    id="filter-search"
-                    value="<?php echo $this->escape($this->state->get('list.filter')); ?>"
-                    class="inputbox" onchange="document.adminForm.submit();"
-                    placeholder="<?php echo Text::_('COM_TAGS_TITLE_FILTER_LABEL'); ?>"
-                >
-                <button type="submit" name="filter_submit" class="btn btn-primary"><?php echo Text::_('JGLOBAL_FILTER_BUTTON'); ?></button>
-                <button type="reset" name="filter-clear-button" class="btn btn-secondary"><?php echo Text::_('JSEARCH_FILTER_CLEAR'); ?></button>
+        <div class="row my-4">
+            <div class="col">
+                <?php if ($this->params->get('filter_field')) : ?>
+                    <div class="com-tags-tag__filter btn-group">
+                        <label class="filter-search-lbl visually-hidden" for="filter-search">
+                            <?php echo Text::_('COM_TAGS_TITLE_FILTER_LABEL'); ?>
+                        </label>
+                        <input type="text" name="filter-search" id="filter-search" value="<?php echo $this->escape($this->state->get('list.filter')); ?>" class="inputbox" onchange="document.adminForm.submit();" placeholder="<?php echo Text::_('COM_TAGS_TITLE_FILTER_LABEL'); ?>">
+                        <button type="submit" name="filter_submit" class="btn btn-primary"><?php echo Text::_('JGLOBAL_FILTER_BUTTON'); ?></button>
+                        <button type="reset" name="filter-clear-button" class="btn btn-secondary"><?php echo Text::_('JSEARCH_FILTER_CLEAR'); ?></button>
+                    </div>
+                <?php endif; ?>
+                <?php if ($this->params->get('show_pagination_limit')) : ?>
+                    <div class="btn-group float-end">
+                        <label for="limit" class="visually-hidden">
+                            <?php echo Text::_('JGLOBAL_DISPLAY_NUM'); ?>
+                        </label>
+                        <?php echo $this->pagination->getLimitBox(); ?>
+                    </div>
+                <?php endif; ?>
             </div>
-        <?php endif; ?>
-        <?php if ($this->params->get('show_pagination_limit')) : ?>
-            <div class="btn-group float-end">
-                <label for="limit" class="visually-hidden">
-                    <?php echo Text::_('JGLOBAL_DISPLAY_NUM'); ?>
-                </label>
-                <?php echo $this->pagination->getLimitBox(); ?>
-            </div>
-        <?php endif; ?>
+        </div>
 
         <?php if (empty($this->items)) : ?>
-            <div class="alert alert-info">
-                <span class="icon-info-circle" aria-hidden="true"></span><span class="visually-hidden"><?php echo Text::_('INFO'); ?></span>
-                    <?php echo Text::_('COM_TAGS_NO_ITEMS'); ?>
+            <div class="row my-4">
+                <div class="col">
+                    <div class="alert alert-info">
+                        <span class="icon-info-circle" aria-hidden="true"></span><span class="visually-hidden"><?php echo Text::_('INFO'); ?></span>
+                        <?php echo Text::_('COM_TAGS_NO_ITEMS'); ?>
+                    </div>
+                </div>
             </div>
         <?php else : ?>
+
+            <!-- <div class="row my-4">
+                <div class="col">
+                    <div class="list-group">
+                        <a href="#" class="list-group-item list-group-item-action">
+                            
+                        </a>
+                    </div>
+                </div>
+            </div> -->
             <table class="com-tags-tag-list__category category table table-striped table-bordered table-hover">
                 <?php if ($this->params->get('show_headings')) : ?>
                     <thead>
@@ -81,9 +92,9 @@ $listDirn  = $this->escape($this->state->get('list.direction'));
                     <?php foreach ($this->items as $i => $item) : ?>
                         <?php if ($item->core_state == 0) : ?>
                             <tr class="system-unpublished cat-list-row<?php echo $i % 2; ?>">
-                        <?php else : ?>
-                            <tr class="cat-list-row<?php echo $i % 2; ?>" >
-                        <?php endif; ?>
+                            <?php else : ?>
+                            <tr class="cat-list-row<?php echo $i % 2; ?>">
+                            <?php endif; ?>
                             <th scope="row" class="list-title">
                                 <?php if (($item->type_alias === 'com_users.category') || ($item->type_alias === 'com_banners.category')) : ?>
                                     <?php echo $this->escape($item->core_title); ?>
@@ -109,20 +120,25 @@ $listDirn  = $this->escape($this->state->get('list.direction'));
                                 </td>
                             <?php endif; ?>
                             </tr>
-                    <?php endforeach; ?>
+                        <?php endforeach; ?>
                 </tbody>
             </table>
         <?php endif; ?>
 
-        <?php // Add pagination links ?>
+        <?php // Add pagination links 
+        ?>
         <?php if (($this->params->def('show_pagination', 2) == 1 || ($this->params->get('show_pagination') == 2)) && ($this->pagination->pagesTotal > 1)) : ?>
-            <div class="com-tags-tag-list__pagination w-100">
-                <?php if ($this->params->def('show_pagination_results', 1)) : ?>
-                    <p class="counter float-end pt-3 pe-2">
-                        <?php echo $this->pagination->getPagesCounter(); ?>
-                    </p>
-                <?php endif; ?>
-                <?php echo $this->pagination->getPagesLinks(); ?>
+            <div class="row my-4">
+                <div class="col">
+                    <div class="com-tags-tag-list__pagination w-100">
+                        <?php if ($this->params->def('show_pagination_results', 1)) : ?>
+                            <p class="counter float-end pt-3 pe-2">
+                                <?php echo $this->pagination->getPagesCounter(); ?>
+                            </p>
+                        <?php endif; ?>
+                        <?php echo $this->pagination->getPagesLinks(); ?>
+                    </div>
+                </div>
             </div>
         <?php endif; ?>
         <input type="hidden" name="filter_order" value="<?php echo $listOrder; ?>">
